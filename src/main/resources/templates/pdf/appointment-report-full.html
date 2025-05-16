@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Complete Appointment Report</title>
+    <style>
+        /* Professional medical report styling */
+        body { font-family: 'Arial', sans-serif; margin: 2cm; }
+        .header { text-align: center; margin-bottom: 1.5cm; }
+        .header img { height: 80px; }
+        .title { font-size: 22pt; font-weight: bold; color: #2c3e50; }
+        .subtitle { font-size: 12pt; color: #7f8c8d; }
+        .section { margin-bottom: 1cm; }
+        .section-title { 
+            font-size: 14pt; 
+            font-weight: bold; 
+            border-bottom: 2px solid #3498db; 
+            padding-bottom: 3px;
+            margin-bottom: 0.5cm;
+            color: #2c3e50;
+        }
+        .detail-table { width: 100%; border-collapse: collapse; }
+        .detail-table th { 
+            text-align: left; 
+            padding: 5px 10px; 
+            background-color: #f8f9fa; 
+            border-bottom: 1px solid #ddd;
+        }
+        .detail-table td { padding: 8px 10px; border-bottom: 1px solid #eee; }
+        .signature-area { margin-top: 2cm; }
+        .footer { margin-top: 1.5cm; font-size: 9pt; text-align: center; color: #95a5a6; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">APPOINTMENT SUMMARY REPORT</div>
+        <div class="subtitle">HealthTrack Pro Medical System</div>
+    </div>
+
+    <!-- Patient Information Section -->
+    <div class="section">
+        <div class="section-title">PATIENT INFORMATION</div>
+        <table class="detail-table">
+            <tr>
+                <th width="30%">Patient Name</th>
+                <td th:text="${patient.firstName + ' ' + patient.lastName}"></td>
+            </tr>
+            <tr>
+                <th>Date of Birth</th>
+                <td th:text="${#temporals.format(patient.dateOfBirth, 'MMMM d, yyyy')}"></td>
+            </tr>
+            <tr>
+                <th>Patient ID</th>
+                <td th:text="${patient.userId}"></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Appointment Details Section -->
+    <div class="section">
+        <div class="section-title">APPOINTMENT DETAILS</div>
+        <table class="detail-table">
+            <tr>
+                <th width="30%">Appointment Date</th>
+                <td th:text="${#temporals.format(appointment.startTime, 'MMMM d, yyyy h:mm a')}"></td>
+            </tr>
+            <tr>
+                <th>Duration</th>
+                <td th:text="${T(java.time.Duration).between(appointment.startTime, appointment.endTime).toMinutes() + ' minutes'}"></td>
+            </tr>
+            <tr>
+                <th>Provider</th>
+                <td th:text="${doctor.firstName + ' ' + doctor.lastName + ' (' + doctor.specialization + ')'}"></td>
+            </tr>
+            <tr>
+                <th>Location</th>
+                <td th:text="${appointment.location}"></td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td th:text="${appointment.status}"></td>
+            </tr>
+            <tr>
+                <th>Reason for Visit</th>
+                <td th:text="${appointment.reason}"></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Clinical Notes Section -->
+    <div class="section">
+        <div class="section-title">CLINICAL NOTES</div>
+        <div style="border: 1px solid #eee; padding: 15px; background-color: #f8f9fa; min-height: 100px;">
+            <p th:if="${appointment.notes != null}" th:text="${appointment.notes}"></p>
+            <p th:if="${appointment.notes == null}">No clinical notes recorded for this appointment.</p>
+        </div>
+    </div>
+
+    <!-- Prescription Section -->
+    <div th:if="${prescription != null}" class="section">
+        <div class="section-title">PRESCRIPTION</div>
+        <table class="detail-table">
+            <tr>
+                <th width="30%">Medication</th>
+                <td th:text="${prescription.medication}"></td>
+            </tr>
+            <tr>
+                <th>Dosage</th>
+                <td th:text="${prescription.dosage}"></td>
+            </tr>
+            <tr>
+                <th>Instructions</th>
+                <td th:text="${prescription.instructions}"></td>
+            </tr>
+            <tr>
+                <th>Prescribed By</th>
+                <td th:text="${doctor.firstName + ' ' + doctor.lastName}"></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Doctor's Feedback Section -->
+    <div th:if="${feedback != null}" class="section">
+        <div class="section-title">DOCTOR'S ASSESSMENT</div>
+        <div style="border: 1px solid #eee; padding: 15px; background-color: #f8f9fa; min-height: 100px;">
+            <p th:text="${feedback.comments}"></p>
+        </div>
+        <div style="text-align: right; margin-top: 10px;">
+            <span th:text="${doctor.firstName + ' ' + doctor.lastName}"></span><br>
+            <span th:text="${doctor.specialization}"></span>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Report generated on <span th:text="${#temporals.format(report.createdAt, 'MMMM d, yyyy')}"></span></p>
+        <p>© HealthTrack Pro - Confidential Medical Document</p>
+    </div>
+</body>
+</html>

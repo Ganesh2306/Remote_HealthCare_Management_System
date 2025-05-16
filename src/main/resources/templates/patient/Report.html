@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta th:name="${_csrf.parameterName}" th:content="${_csrf.token}"/>
+    <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <title>HealthTrack Pro | Patient Reports</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/patient/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/patient/report.css}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa fa-heartbeat logo" aria-hidden="true"></i>
+                <h2>HealthTrack Pro</h2>
+                <p>Your health, our priority</p>
+            </div>
+            
+            <div class="profile-section">
+                <i class="fas fa-heartbeat" style="font-size: 2.5rem; color: white; margin-bottom: 0.75rem;"></i>
+                <h3 th:text="${patient.firstName + ' ' + patient.lastName}">John Doe</h3>
+                <p class="patient-id">ID: <span th:text="${patient.userId}">PT123456</span></p>
+            </div>
+            
+            <nav class="nav-menu">
+                <ul>
+                    <li><a th:href="@{/patient/dashboard}"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                    <li><a th:href="@{/patient/dashboard/medicalrecord/edit}"><i class="fas fa-edit"></i> <span>Edit Medical Record</span></a></li>
+                    <li class="active"><a th:href="@{/patient/dashboard/Reports}"><i class="fas fa-file-medical-alt"></i> <span>View Reports</span></a></li>
+                    <li><a th:href="@{/login?logout=true}"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <p>HealthTrack Pro v2.1</p>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <div class="header-title">
+                    <h1>Medical Reports</h1>
+                    <p class="welcome-message">Review your medical reports and history</p>
+                </div>
+                <div class="header-actions">
+                    <a th:href="@{/patient/dashboard}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            </header>
+
+            <!-- Reports Content -->
+            <div class="reports-container">
+                <div class="report-header">
+                    <h2><i class="fas fa-file-medical-alt"></i> Your Medical Reports</h2>
+                </div>
+                
+                <!-- Tab Navigation -->
+                <div class="tab-container">
+                    <div class="tab-buttons">
+                        <button class="tab-button active" data-tab="allReports">All Reports</button>
+                        <button class="tab-button" data-tab="vitalReports">Vital Sign Reports</button>
+                        <button class="tab-button" data-tab="appointmentReports">Appointment Reports</button>
+                    </div>
+                    
+                    <!-- All Reports Tab -->
+                    <div id="allReports" class="tab-content active">
+                        <div th:if="${#lists.isEmpty(vitalReports) and #lists.isEmpty(appointmentReports)}" class="empty-state">
+                            <i class="fas fa-file-medical"></i>
+                            <h3>No Reports Available</h3>
+                            <p>You don't have any medical reports yet.</p>
+                        </div>
+                        
+                        <!-- Vital Sign Reports -->
+                        <div th:each="report : ${vitalReports}">
+                            <div class="report-item">
+                                <span class="report-type vital">Vital Sign Report</span>
+                                <div class="report-date">
+                                    <i class="far fa-calendar-alt"></i> 
+                                    <span th:text="${#temporals.format(report.createdAt, 'MMM dd, yyyy hh:mm a')}"></span>
+                                </div>
+                                
+                                <div class="report-details">
+                                    <div class="detail-row">
+                                        <span class="detail-label">Doctor:</span>
+                                        <span class="detail-value" th:text="${report.vitalSigns.doctor.fullName}"></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Body Temperature:</span>
+                                        <span class="detail-value" th:text="${report.vitalSigns.bodyTemperature + ' °C'}"></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Pulse Rate:</span>
+                                        <span class="detail-value" th:text="${report.vitalSigns.pulseRate + ' bpm'}"></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Blood Pressure:</span>
+                                        <span class="detail-value" th:text="${report.vitalSigns.bloodPressure.getBloodPressureReading()}"></span>
+                                        <span class="detail-value" th:text="'(' + report.vitalSigns.bloodPressure.category.description + ')'"></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Oxygen Saturation:</span>
+                                        <span class="detail-value" th:text="${report.vitalSigns.oxygenSaturation + '%'}"></span>
+                                    </div>
+                                </div>
+                                
+                                <div th:if="${report.prescription != null}" class="prescription-section">
+                                    <h4 class="section-title"><i class="fas fa-prescription"></i> Prescription</h4>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Medication:</span>
+                                        <span class="detail-value" th:text="${report.prescription.medication}"></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Dosage:</span>
+                                        <span class="detail-value" th:text="${report.prescription.dosage}"></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Instructions:</span>
+                                        <span class="detail-value" th:text="${report.prescription.instructions}"></span>
+                                    </div>
+                                </div>
+                                
+                                <div th:if="${report.feedback != null}" class="feedback-section">
+                                    <h4 class="section-title"><i class="fas fa-comment-medical"></i> Doctor's Feedback</h4>
+                                    <p th:text="${report.feedback.comments}"></p>
+                                </div>
+                                
+                                <div class="report-actions">
+                                    <form th:action="@{/patient/dashboard/reports/download/vital/{id}(id=${report.id})}" method="get">
+                                        <button type="submit" class="download-btn">
+                                            <i class="fas fa-download"></i> Download Report
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Appointment Reports -->
+                        <div th:each="report : ${appointmentReports}">
+                            <div class="report-item">
+                                <span class="report-type appointment">Appointment Report</span>
+                                <div class="report-date">
+                                    <i class="far fa-calendar-alt"></i> 
+                                    <span th:text="${#temporals.format(report.createdAt, 'MMM dd, yyyy hh:mm a')}"></span>
+                                </div>
+                                
+                                <div class="report-details">
+                                    <div class="detail-row">
+                                        <span class="detail-label">Doctor:</span>
+                                        <span class="detail-value" th:text="${report.appointment.doctor.fullName}"></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Appointment Date:</span>
+                                        <span class="detail-value" th:text="${#temporals.format(report.appointment.startTime, 'MMM dd, yyyy hh:mm a')}"></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Reason:</span>
+                                        <span class="detail-value" th:text="${report.appointment.reason}"></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Location:</span>
+                                        <span class="detail-value" th:text="${report.appointment.location}"></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Status:</span>
+                                        <span class="detail-value" th:text="${report.appointment.status}"></span>
+                                    </div>
+                                </div>
+                                
+                                <div th:if="${report.prescription != null}" class="prescription-section">
+                                    <h4 class="section-title"><i class="fas fa-prescription"></i> Prescription</h4>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Medication:</span>
+                                        <span class="detail-value" th:text="${report.prescription.medication}"></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Dosage:</span>
+                                        <span class="detail-value" th:text="${report.prescription.dosage}"></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Instructions:</span>
+                                        <span class="detail-value" th:text="${report.prescription.instructions}"></span>
+                                    </div>
+                                </div>
+                                
+                                <div th:if="${report.feedback != null}" class="feedback-section">
+                                    <h4 class="section-title"><i class="fas fa-comment-medical"></i> Doctor's Feedback</h4>
+                                    <p th:text="${report.feedback.comments}"></p>
+                                </div>
+                                
+                                <div class="report-actions">
+                                    <form th:action="@{/patient/dashboard/reports/download/appointment/{id}(id=${report.id})}" method="get">
+                                        <button type="submit" class="download-btn">
+                                            <i class="fas fa-download"></i> Download Report
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Vital Reports Tab -->
+                    <div id="vitalReports" class="tab-content">
+                        <div th:if="${#lists.isEmpty(vitalReports)}" class="empty-state">
+                            <i class="fas fa-heartbeat"></i>
+                            <h3>No Vital Sign Reports</h3>
+                            <p>You don't have any vital sign reports yet.</p>
+                        </div>
+                        
+                        <div th:each="report : ${vitalReports}">
+                            <!-- Same vital report content as above -->
+                        </div>
+                    </div>
+                    
+                    <!-- Appointment Reports Tab -->
+                    <div id="appointmentReports" class="tab-content">
+                        <div th:if="${#lists.isEmpty(appointmentReports)}" class="empty-state">
+                            <i class="fas fa-calendar-check"></i>
+                            <h3>No Appointment Reports</h3>
+                            <p>You don't have any appointment reports yet.</p>
+                        </div>
+                        
+                        <div th:each="report : ${appointmentReports}">
+                            <!-- Same appointment report content as above -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Tab functionality
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons and contents
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding content
+                button.classList.add('active');
+                const tabId = button.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

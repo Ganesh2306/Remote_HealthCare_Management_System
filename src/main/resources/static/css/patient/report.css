@@ -1,0 +1,137 @@
+.reports-container {
+    background-color: var(--white);
+    border-radius: var(--border-radius-sm);
+    box-shadow: var(--box-shadow);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.report-item {
+    border: 1px solid var(--gray-light);
+    border-radius: var(--border-radius-sm);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    background-color: var(--light);
+}
+
+.report-type {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.report-type.vital {
+    background-color: var(--info-light);
+    color: var(--info);
+}
+
+.report-type.appointment {
+    background-color: var(--success);
+    color: var(--white);
+}
+
+.report-date {
+    color: var(--gray);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.report-details {
+    margin: 1rem 0;
+}
+
+.detail-row {
+    display: flex;
+    margin-bottom: 0.5rem;
+}
+
+.detail-label {
+    font-weight: 600;
+    width: 150px;
+    color: var(--gray-dark);
+}
+
+.detail-value {
+    flex: 1;
+}
+
+.prescription-section, .feedback-section {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--gray-light);
+}
+
+.section-title {
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--secondary);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--gray);
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--gray-light);
+}
+
+.download-btn {
+    background-color: var(--primary);
+    color: var(--white);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.download-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+.tab-container {
+    margin-bottom: 2rem;
+}
+
+.tab-buttons {
+    display: flex;
+    border-bottom: 1px solid var(--gray-light);
+    margin-bottom: 1.5rem;
+}
+
+.tab-button {
+    padding: 0.75rem 1.5rem;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--gray);
+    transition: var(--transition);
+}
+
+.tab-button.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    font-weight: 500;
+}
