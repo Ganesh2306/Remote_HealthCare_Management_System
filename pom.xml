@@ -134,11 +134,11 @@
     <version>5.5.13.3</version>
 </dependency>
 
-<dependency>
+<!--<dependency>
     <groupId>org.xhtmlrenderer</groupId>
     <artifactId>flying-saucer-pdf</artifactId>
     <version>9.1.22</version>
-</dependency>
+</dependency>-->
 
         <!-- Utilities -->
         <dependency>
